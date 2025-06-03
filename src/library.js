@@ -1,5 +1,5 @@
 // ===== Library =====
-// Made by LewdLeah on 6/3/2025
+// Made by LewdLeah on 6/2/2025
 function AutomataDungeon(HOOK) {
     "use strict";
     if (HOOK === "input") {
@@ -10,14 +10,14 @@ function AutomataDungeon(HOOK) {
         s: obj => Object.seal(obj)
     };
     // Initialize config settings
-    if (!state.CellularAutomata) {
-        state.CellularAutomata = {
+    if (!state.AutomataDungeon) {
+        state.AutomataDungeon = {
             rule: 30,
             width: 16,
             generations: 18
         };
     }
-    const CA = O.s(state.CellularAutomata);
+    const AD = O.s(state.AutomataDungeon);
     const configTemplate = O.f({
         name: "Configure Automata",
         type: "class",
@@ -58,17 +58,17 @@ function AutomataDungeon(HOOK) {
         );
         const ruleMatch = simpleEntry.match(/rulenumber:(\d+)/);
         if (ruleMatch) {
-            CA.rule = parseSettingMatch(0, ruleMatch, 255);
+            AD.rule = parseSettingMatch(0, ruleMatch, 255);
         }
         const widthMatch = simpleEntry.match(/gridwidth:(\d+)/);
         if (widthMatch) {
-            CA.width = parseSettingMatch(5, widthMatch, 1000);
+            AD.width = parseSettingMatch(5, widthMatch, 1000);
         }
         const generationsMatch = simpleEntry.match(/generations:(\d+)/);
         if (generationsMatch) {
-            CA.generations = parseSettingMatch(1, generationsMatch, 1000);
+            AD.generations = parseSettingMatch(1, generationsMatch, 1000);
         }
-        O.f(CA);
+        O.f(AD);
         configCard.entry = getConfigEntry();
         // Clamps integers between bounds
         function parseSettingMatch(lower, settingMatch, upper) {
@@ -105,13 +105,13 @@ function AutomataDungeon(HOOK) {
     // Initialize the grid history (array of boolean arrays)
     const grids = [[
         ...[...gridString].map(char => (char === "⬜")),
-        ...Array(CA.width).fill(false)
-    ].slice(0, CA.width)];
+        ...Array(AD.width).fill(false)
+    ].slice(0, AD.width)];
     const size = grids[0].length;
     // Simulate the 1D elementary cellular automata for n many generations
-    for (let i = 0; i < CA.generations; i++) {
+    for (let i = 0; i < AD.generations; i++) {
         const grid = O.f(grids[grids.length - 1]);
-        grids.push(grid.map((_, i) => (((CA.rule >> (
+        grids.push(grid.map((_, i) => (((AD.rule >> (
             // Left neighbor
             ((grid[(i - 1 + size) % size] ? 1 : 0) << 2)
             // Current cell
@@ -123,9 +123,9 @@ function AutomataDungeon(HOOK) {
     function getConfigEntry() {
         return prose(
             "> You may adjust the three settings below",
-            "> Rule number: " + CA.rule,
-            "> Grid width: " + CA.width,
-            "> Generations: " + CA.generations
+            "> Rule number: " + AD.rule,
+            "> Grid width: " + AD.width,
+            "> Generations: " + AD.generations
         );
     }
     function prose(...args) {
